@@ -56,11 +56,17 @@ Optimized for PRODUCTION BY DEFAULT.
 On your VPS run this:
 
 ```bash
-bash -c "$(wget -qO- -o- https://github.com/rrpadilla/server-management/blob/master/scripts/initial_server_setup.sh)"
+curl -L https://raw.githubusercontent.com/rrpadilla/server-management/master/scripts/initial_server_setup.sh -o /tmp/initial_setup.sh && chmod +x /tmp/initial_setup.sh && bash /tmp/initial_setup.sh && rm /tmp/initial_setup.sh
 ```
 
 If you have downloaded the script to your local computer, you can pass the script directly to SSH by typing:
 
 ```bash
 ssh root@servers_public_IP "bash -s" -- < scripts/initial_server_setup.sh
+```
+
+Using a custom USERNAME **myusername**
+
+```bash
+ssh root@servers_public_IP "bash -s" -- < scripts/initial_server_setup.sh myusername
 ```

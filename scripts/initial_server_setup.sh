@@ -10,10 +10,6 @@ set -euo pipefail
 USERNAME="ubuntu"
 USERNAME="${1:-$USERNAME}"
 
-echo "HELLO $USERNAME"
-
-exit
-
 # Whether to copy over the root user's `authorized_keys` file to the new sudo
 # user.
 COPY_AUTHORIZED_KEYS_FROM_ROOT=true
