@@ -6,15 +6,15 @@ When you first create a new Ubuntu 18.04 server, there are a few configuration s
 
 When the initial server setup script runs, the following actions are performed:
 
-    - Create a regular user account with **sudo** privileges using the name specified by the **USERNAME** variable. Default "**ubuntu**".
-    - Configure the initial password state for the new account:
-        - If the server was configured for password authentication, the original, generated administrative password is moved from the **root** account to the new sudo account. The password for the **root** account is then locked.
-        - If the server was configured for SSH key authentication, a blank password is set for the **root** account.
-    - The **root** user's password is marked as expired so that it must be changed upon first login.
-    - The **authorized_keys** file from the **root** account is copied over to the sudo user if **COPY_AUTHORIZED_KEYS_FROM_ROOT** is set to true.
-    - Any keys defined in **OTHER_PUBLIC_KEYS_TO_ADD** are added to the **sudo** user’s **authorized_keys** file.
-    - Password-based SSH authentication is disabled for the **root** user.
-    - The **UFW firewall** is enabled with **SSH** connections permitted.
+- Create a regular user account with **sudo** privileges using the name specified by the **USERNAME** variable. Default "**ubuntu**".
+- Configure the initial password state for the new account:
+    - If the server was configured for password authentication, the original, generated administrative password is moved from the **root** account to the new sudo account. The password for the **root** account is then locked.
+    - If the server was configured for SSH key authentication, a blank password is set for the **root** account.  
+- The **root** user's password is marked as expired so that it must be changed upon first login.
+- The **authorized_keys** file from the **root** account is copied over to the sudo user if **COPY_AUTHORIZED_KEYS_FROM_ROOT** is set to true.
+- Any keys defined in **OTHER_PUBLIC_KEYS_TO_ADD** are added to the **sudo** user’s **authorized_keys** file.
+- Password-based SSH authentication is disabled for the **root** user.
+- The **UFW firewall** is enabled with **SSH** connections permitted.
 
 ## LEMP
 
