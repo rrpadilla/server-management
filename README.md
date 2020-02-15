@@ -2,9 +2,10 @@
 
 ## Initial Server Setup
 
-When you first create a new Ubuntu 18.04 server, there are a few configuration steps that you should take early on as part of the basic setup. This will increase the security and usability of your server and will give you a solid foundation for subsequent actions. [Read more here](https://www.digitalocean.com/community/tutorials/automating-initial-server-setup-with-ubuntu-18-04)
+When you first create a new Ubuntu 18.04 server, there are a few configuration steps that you should take early on as part of the basic setup. This will increase the security and usability of your server and will give you a solid foundation for subsequent actions. [Read more here](https://www.digitalocean.com/community/tutorials/automating-initial-server-setup-with-ubuntu-18-04).
 
 When the initial server setup script runs, the following actions are performed:
+
     - Create a regular user account with **sudo** privileges using the name specified by the **USERNAME** variable. Default "**ubuntu**".
     - Configure the initial password state for the new account:
         - If the server was configured for password authentication, the original, generated administrative password is moved from the **root** account to the new sudo account. The password for the **root** account is then locked.
@@ -63,4 +64,3 @@ If you have downloaded the script to your local computer, you can pass the scrip
 ```bash
 ssh root@servers_public_IP "bash -s" -- < scripts/initial_server_setup.sh
 ```
-
