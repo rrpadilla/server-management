@@ -151,6 +151,7 @@ function main() {
     the_php
     the_database_install
     the_unattended_security_upgrades
+    the_cleanup
 }
 
 function the_first() {
@@ -183,7 +184,7 @@ function the_firewall() {
 
 function the_basics() {
     # Add some PPAs to stay current
-    apt-get install -y software-properties-Common
+    apt-get install -y software-properties-common
     apt-add-repository ppa:nginx/stable -y
     apt-add-repository ppa:ondrej/php -y
     ## apt-add-repository ppa:chris-lea/redis-server -y
@@ -326,12 +327,16 @@ function the_database_install() {
 }
 
 function the_mysql() {
-    # Install MySQL
+    echo -e " Installing MySQL"
     local MYSQLPASS=""
     MYSQLPASS=$(openssl rand -base64 32)
 
-    if [ ! -d /home/"$USERNAME"/.provisioner/configs ]; then
-        mkdir /home/"$USERNAME"/.provisioner/configs
+    if [ ! -d /home/"$USERNAME"/.provisioner/configs ]; 
+        then
+            echo -e ".provisioner/configs DOES NOT EXIST!"
+            mkdir /home/"$USERNAME"/.provisioner/configs
+        else
+            echo -e ".provisioner/configs EXISTS!"
     fi
 
     echo "$MYSQLPASS" > /home/"$USERNAME"/.provisioner/configs/mysqlpass.txt
@@ -429,6 +434,12 @@ APT::Periodic::Download-Upgradeable-Packages "1";
 APT::Periodic::AutocleanInterval "7";
 APT::Periodic::Unattended-Upgrade "1";
 EOF
+}
+
+public function the_cleanup() {
+    # Clean Up
+    apt-get -y autoremove
+    apt-get -y clean
 }
 
 # leave this last to prevent any partial executions
