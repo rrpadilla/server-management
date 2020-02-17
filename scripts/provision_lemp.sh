@@ -193,7 +193,7 @@ function the_basics() {
     apt-get update
 
     # Install Some Basic Packages
-    sudo apt-get install -y git curl wget zip unzip libmcrypt4 libpcre3-dev imagemagick
+    sudo apt-get install -y git curl wget zip unzip libmcrypt4 libpcre3-dev imagemagick debconf-utils
 }
 
 function the_nginx() {
@@ -325,6 +325,8 @@ function the_database_install() {
 }
 
 function the_mysql() {
+    export DEBIAN_FRONTEND=noninteractive
+ 
     echo -e " Installing MySQL"
     local MYSQLPASS=""
     MYSQLPASS=$(openssl rand -base64 32)
@@ -340,17 +342,17 @@ function the_mysql() {
             echo -e ".provisioner/configs EXISTS!"
     fi
 
-    echo "$MYSQLPASS" > /home/"$USERNAME"/.provisioner/configs/mysqlpass.txt
+    echo " MySQL Password: $MYSQLPASS" > /home/"$USERNAME"/.provisioner/configs/mysqlpass.txt
+    # Set files owned by the current user
+    chown -R "$USERNAME":"$USERNAME" /home/"$USERNAME"/.provisioner
 
     echo "mysql-server mysql-server/root_password password $MYSQLPASS" | sudo debconf-set-selections
     echo "mysql-server mysql-server/root_password_again password $MYSQLPASS" | sudo debconf-set-selections
-    echo "mysql-server-5.7 mysql-server/root_password password $MYSQLPASS" | sudo debconf-set-selections
-    echo "mysql-server-5.7 mysql-server/root_password_again password $MYSQLPASS" | sudo debconf-set-selections
+    #echo "mysql-server-5.7 mysql-server/root_password password $MYSQLPASS" | sudo debconf-set-selections
+    #echo "mysql-server-5.7 mysql-server/root_password_again password $MYSQLPASS" | sudo debconf-set-selections
 
     apt-get install -y mysql-server
-
-    echo -e " You can use the following MySQL password: $MYSQLPASS"
-    mysql_secure_installation
+    # mysql_secure_installation
 }
 
 #function the_mariadb() {
@@ -442,9 +444,6 @@ EOF
 }
 
 function the_cleanup() {
-    # Set files owned by the current user
-    chown -R "$USERNAME":"$USERNAME" /home/"$USERNAME"/.provisioner
-
     # Clean Up
     apt-get -y autoremove
     apt-get -y clean
