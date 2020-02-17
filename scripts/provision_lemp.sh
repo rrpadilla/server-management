@@ -436,7 +436,7 @@ APT::Periodic::Unattended-Upgrade "1";
 EOF
 }
 
-public function the_cleanup() {
+function the_cleanup() {
     # Clean Up
     apt-get -y autoremove
     apt-get -y clean
