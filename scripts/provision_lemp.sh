@@ -262,8 +262,6 @@ function the_php() {
 
     # Set default PHP VERSION
     update-alternatives --set php /usr/bin/php"$PHPVERSION"
-    update-alternatives --set php-config /usr/bin/php-config"$PHPVERSION"
-    update-alternatives --set phpize /usr/bin/phpize"$PHPVERSION"
 }
 
 function the_php_generator_config() {

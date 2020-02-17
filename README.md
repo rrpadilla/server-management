@@ -71,6 +71,12 @@ Using a custom USERNAME **myusername**
 ssh root@servers_public_IP "bash -s" -- < scripts/initial_server_setup.sh myusername
 ```
 
+Install LEMP 
+
+```bash
+ssh root@servers_public_IP "bash -s" -- < scripts/provision_lemp.sh
+```
+
 ### [Shell Check](https://www.shellcheck.net/)
 
 
