@@ -346,6 +346,8 @@ function the_mysql() {
     echo "mysql-server mysql-server/root_password_again password $MYSQLPASS" | sudo debconf-set-selections
 
     apt-get install -y mysql-server
+
+    echo -e " You can use the following MySQL password: $MYSQLPASS"
     mysql_secure_installation
 }
 
