@@ -19,7 +19,7 @@ fi
 USERNAME="ubuntu"
 PRODUCTIONVALUES=true
 default_php_version="7.4"
-default_database="mariadb"
+default_database="mysql"
 PHPVERSION="$default_php_version"
 MULTIPHPVERSION=()
 DB="$default_database"
@@ -134,10 +134,8 @@ do
 done
 
 echo -e "VARIABLES TO USE: \n PHP $PHPVERSION \n DB $DB."
-echo -e " PHP VERSIONS TO INSTALL: ${MULTIPHPVERSION[@]}"
-echo -e " The array contains ${#MULTIPHPVERSION[@]} elements"
-
-exit
+#echo -e " PHP VERSIONS TO INSTALL: ${MULTIPHPVERSION[@]}"
+#echo -e " The array contains ${#MULTIPHPVERSION[@]} elements"
 
 ######################################################
 ####              INSTALL PACKAGES NOW           #####
@@ -433,4 +431,4 @@ EOF
 }
 
 # leave this last to prevent any partial executions
-#### main
+main
