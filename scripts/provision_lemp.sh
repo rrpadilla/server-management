@@ -332,6 +332,9 @@ function the_mysql() {
     if [ ! -d /home/"$USERNAME"/.provisioner/configs ]; 
         then
             echo -e ".provisioner/configs DOES NOT EXIST!"
+            if [ ! -d /home/"$USERNAME"/.provisioner ]; then
+                mkdir /home/"$USERNAME"/.provisioner
+            fi
             mkdir /home/"$USERNAME"/.provisioner/configs
         else
             echo -e ".provisioner/configs EXISTS!"
