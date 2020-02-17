@@ -440,6 +440,9 @@ EOF
 }
 
 function the_cleanup() {
+    # Set files owned by the current user
+    chown -R "$USERNAME":"$USERNAME" /home/"$USERNAME"/.provisioner
+
     # Clean Up
     apt-get -y autoremove
     apt-get -y clean
