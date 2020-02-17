@@ -268,7 +268,7 @@ function the_php() {
 
 function the_php_generator_config() {
     local phpVersion="$1"
-    if [ -z "$2" ]; then
+    if [ -z "$phpVersion" ]; then
         # Install PHP (PHP-FPM, PHP-CLI and extensions)
         apt-get install -y --allow-change-held-packages \
         php"$phpVersion" php"$phpVersion"-bcmath php"$phpVersion"-bz2 php"$phpVersion"-cgi php"$phpVersion"-cli php"$phpVersion"-common php"$phpVersion"-curl php"$phpVersion"-dba php"$phpVersion"-dev \
@@ -280,7 +280,7 @@ function the_php_generator_config() {
 
 function the_php_generator_cli() {
     local phpVersion="$1"
-    if [ -z "$2" ]; then
+    if [ -z "$phpVersion" ]; then
         # Set Some PHP CLI Settings
         sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/"$phpVersion"/cli/php.ini
         sed -i "s/display_errors = .*/display_errors = On/" /etc/php/"$phpVersion"/cli/php.ini
@@ -291,7 +291,7 @@ function the_php_generator_cli() {
 
 function the_php_generator_fpm() {
     local phpVersion="$1"
-    if [ -z "$2" ]; then
+    if [ -z "$phpVersion" ]; then
         # Tweak PHP-FPM settings
         if [ "$PRODUCTIONVALUES" = true ];
             then
