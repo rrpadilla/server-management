@@ -333,18 +333,16 @@ function the_mysql() {
 
     if [ ! -d /home/"$USERNAME"/.provisioner/configs ]; 
         then
-            echo -e ".provisioner/configs DOES NOT EXIST!"
-            if [ ! -d /home/"$USERNAME"/.provisioner ]; then
-                mkdir /home/"$USERNAME"/.provisioner
+            if [ ! -d /home/"$USERNAME"/.provisioner ]; 
+                then
+                    mkdir /home/"$USERNAME"/.provisioner
             fi
             mkdir /home/"$USERNAME"/.provisioner/configs
-        else
-            echo -e ".provisioner/configs EXISTS!"
     fi
 
-    echo " MySQL Password: $MYSQLPASS" > /home/"$USERNAME"/.provisioner/configs/mysqlpass.txt
+    echo "$MYSQLPASS" > /home/"$USERNAME"/.provisioner/configs/mysqlpass.txt
     # Set files owned by the current user
-    chown -R "$USERNAME":"$USERNAME" /home/"$USERNAME"/.provisioner
+    chown -Rf "$USERNAME":"$USERNAME" /home/"$USERNAME"/.provisioner
 
     echo "mysql-server mysql-server/root_password password $MYSQLPASS" | sudo debconf-set-selections
     echo "mysql-server mysql-server/root_password_again password $MYSQLPASS" | sudo debconf-set-selections
@@ -352,7 +350,7 @@ function the_mysql() {
     #echo "mysql-server-5.7 mysql-server/root_password_again password $MYSQLPASS" | sudo debconf-set-selections
 
     apt-get install -y mysql-server
-    # mysql_secure_installation
+    mysql_secure_installation
 }
 
 #function the_mariadb() {
