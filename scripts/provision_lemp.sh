@@ -25,7 +25,7 @@ MULTIPHPVERSION=()
 DB="$default_database"
 phpSupported=("7.4" "7.3" "7.2" "7.1" "7.0" "5.6")
 dbSupported=("none" "mariadb" "mysql" "postgresql")
-allOptions=()
+#allOptions=()
 
 #########################
 # The command line help #
@@ -70,7 +70,7 @@ function check_php_option() {
     local v="$1"
     local tmp="${v/./_}" # replace "." with "_" -> "7.2" = "7_2"
     local tmp1=""
-    for i in ${phpSupported[@]}; do
+    for i in "${phpSupported[@]}"; do
         tmp1="${i/./_}"
         if [[ "$tmp" = "$tmp1" ]]; then
             foundedPhp="$i"
@@ -83,7 +83,7 @@ function check_php_option() {
 function check_db_option() {
     local foundedDB=""
     local v="$1"
-    for i in ${dbSupported[@]}; do
+    for i in "${dbSupported[@]}"; do
         if [[ "$v" = "$i" ]]; then
             foundedDB="$i"
             break
@@ -104,21 +104,21 @@ do
             ;;
         "--php")
             [ -z "$2" ] && error "Must supply a valid PHP VERSION to the --php option."
-            [ -z "$(check_php_option $2)" ] && error "Invalid PHP VERSION ($2) provided."
+            [ -z "$(check_php_option "$2")" ] && error "Invalid PHP VERSION ($2) provided."
             PHPVERSION="$2"
             MULTIPHPVERSION+=("$PHPVERSION")
             shift;;
         "--multiphp")
             [ -z "$2" ] && error "Must supply a valid value to the --multiphp option."
             tmpArr=("$2")
-            for i in ${tmpArr[@]}; do
-                [ -z "$(check_php_option $i)" ] && error "Invalid PHP VERSION ($i) provided."
+            for i in "${tmpArr[@]}"; do
+                [ -z "$(check_php_option "$i")" ] && error "Invalid PHP VERSION ($i) provided."
                 MULTIPHPVERSION+=("$i")
             done
             shift;;
         "--db")
             [ -z "$2" ] && error "Must supply a valid database to the --db option."
-            [ -z "$(check_db_option $2)" ] && error "Invalid database ($2) provided."
+            [ -z "$(check_db_option "$2")" ] && error "Invalid database ($2) provided."
             DB="$2"
             shift;;
         "--dev")
@@ -241,28 +241,28 @@ EOF
 
 function the_php() {
     # Install Generic PHP packages
-    apt-get install -y --allow-change-held-packages \ 
+    apt-get install -y --allow-change-held-packages \
     php-imagick php-memcached php-redis
 
     # Install PHP (PHP-FPM, PHP-CLI and extensions)
-    the_php_generator_config $PHPVERSION
-    the_php_generator_cli $PHPVERSION
-    the_php_generator_fpm $PHPVERSION
+    the_php_generator_config "$PHPVERSION"
+    the_php_generator_cli "$PHPVERSION"
+    the_php_generator_fpm "$PHPVERSION"
 
     # Install MORE PHP (PHP-FPM, PHP-CLI and extensions)
     if [ "${#MULTIPHPVERSION[@]}" -gt 1 ]
         then
-            for i in ${MULTIPHPVERSION[@]}; do
-                the_php_generator_config $i
-                the_php_generator_cli $i
-                the_php_generator_fpm $i
+            for i in "${MULTIPHPVERSION[@]}"; do
+                the_php_generator_config "$i"
+                the_php_generator_cli "$i"
+                the_php_generator_fpm "$i"
             done
     fi
 
     # Set default PHP VERSION
-    update-alternatives --set php /usr/bin/php$PHPVERSION
-    update-alternatives --set php-config /usr/bin/php-config$PHPVERSION
-    update-alternatives --set phpize /usr/bin/phpize$phpVersion
+    update-alternatives --set php /usr/bin/php"$PHPVERSION"
+    update-alternatives --set php-config /usr/bin/php-config"$PHPVERSION"
+    update-alternatives --set phpize /usr/bin/phpize"$PHPVERSION"
 }
 
 function the_php_generator_config() {
@@ -270,10 +270,10 @@ function the_php_generator_config() {
     if [ -z "$2" ]; then
         # Install PHP (PHP-FPM, PHP-CLI and extensions)
         apt-get install -y --allow-change-held-packages \
-        php$phpVersion php$phpVersion-bcmath php$phpVersion-bz2 php$phpVersion-cgi php$phpVersion-cli php$phpVersion-common php$phpVersion-curl php$phpVersion-dba php$phpVersion-dev \
-        php$phpVersion-enchant php$phpVersion-fpm php$phpVersion-gd php$phpVersion-gmp php$phpVersion-imap php$phpVersion-interbase php$phpVersion-intl php$phpVersion-json php$phpVersion-ldap \
-        php$phpVersion-mbstring php$phpVersion-mysql php$phpVersion-odbc php$phpVersion-opcache php$phpVersion-pgsql php$phpVersion-phpdbg php$phpVersion-pspell php$phpVersion-readline \
-        php$phpVersion-snmp php$phpVersion-soap php$phpVersion-sqlite3 php$phpVersion-sybase php$phpVersion-tidy php$phpVersion-xml php$phpVersion-xmlrpc php$phpVersion-xsl php$phpVersion-zip
+        php"$phpVersion" php"$phpVersion"-bcmath php"$phpVersion"-bz2 php"$phpVersion"-cgi php"$phpVersion"-cli php"$phpVersion"-common php"$phpVersion"-curl php"$phpVersion"-dba php"$phpVersion"-dev \
+        php"$phpVersion"-enchant php"$phpVersion"-fpm php"$phpVersion"-gd php"$phpVersion"-gmp php"$phpVersion"-imap php"$phpVersion"-interbase php"$phpVersion"-intl php"$phpVersion"-json php"$phpVersion"-ldap \
+        php"$phpVersion"-mbstring php"$phpVersion"-mysql php"$phpVersion"-odbc php"$phpVersion"-opcache php"$phpVersion"-pgsql php"$phpVersion"-phpdbg php"$phpVersion"-pspell php"$phpVersion"-readline \
+        php"$phpVersion"-snmp php"$phpVersion"-soap php"$phpVersion"-sqlite3 php"$phpVersion"-sybase php"$phpVersion"-tidy php"$phpVersion"-xml php"$phpVersion"-xmlrpc php"$phpVersion"-xsl php"$phpVersion"-zip
     fi
 }
 
@@ -281,10 +281,10 @@ function the_php_generator_cli() {
     local phpVersion="$1"
     if [ -z "$2" ]; then
         # Set Some PHP CLI Settings
-        sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/$phpVersion/cli/php.ini
-        sed -i "s/display_errors = .*/display_errors = On/" /etc/php/$phpVersion/cli/php.ini
-        sed -i "s/memory_limit = .*/memory_limit = 512M/" /etc/php/$phpVersion/cli/php.ini
-        sed -i "s/;date.timezone.*/date.timezone = UTC/" /etc/php/$phpVersion/cli/php.ini
+        sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/"$phpVersion"/cli/php.ini
+        sed -i "s/display_errors = .*/display_errors = On/" /etc/php/"$phpVersion"/cli/php.ini
+        sed -i "s/memory_limit = .*/memory_limit = 512M/" /etc/php/"$phpVersion"/cli/php.ini
+        sed -i "s/;date.timezone.*/date.timezone = UTC/" /etc/php/"$phpVersion"/cli/php.ini
     fi
 }
 
@@ -296,26 +296,26 @@ function the_php_generator_fpm() {
             then
                 ## see: https://github.com/php/php-src/blob/master/php.ini-production
                 ## Suppressing PHP error output here by setting these options to production values
-                sed -i "s/error_reporting = .*/error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_STRICT/" /etc/php/$phpVersion/fpm/php.ini
-                sed -i "s/display_errors = .*/display_errors = Off/" /etc/php/$phpVersion/fpm/php.ini
-                sed -i "s/memory_limit = .*/memory_limit = 512M/" /etc/php/$phpVersion/fpm/php.ini
-                sed -i "s/upload_max_filesize = .*/upload_max_filesize = 256M/" /etc/php/$phpVersion/fpm/php.ini
-                sed -i "s/post_max_size = .*/post_max_size = 256M/" /etc/php/$phpVersion/fpm/php.ini
-                sed -i "s/;date.timezone.*/date.timezone = UTC/" /etc/php/$phpVersion/fpm/php.ini
+                sed -i "s/error_reporting = .*/error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_STRICT/" /etc/php/"$phpVersion"/fpm/php.ini
+                sed -i "s/display_errors = .*/display_errors = Off/" /etc/php/"$phpVersion"/fpm/php.ini
+                sed -i "s/memory_limit = .*/memory_limit = 512M/" /etc/php/"$phpVersion"/fpm/php.ini
+                sed -i "s/upload_max_filesize = .*/upload_max_filesize = 256M/" /etc/php/"$phpVersion"/fpm/php.ini
+                sed -i "s/post_max_size = .*/post_max_size = 256M/" /etc/php/"$phpVersion"/fpm/php.ini
+                sed -i "s/;date.timezone.*/date.timezone = UTC/" /etc/php/"$phpVersion"/fpm/php.ini
 
                 ## Tune PHP-FPM pool settings
-                sed -i "s/;listen\.mode.*/listen.mode = 0666/" /etc/php/$phpVersion/fpm/pool.d/www.conf
-                sed -i "s/;request_terminate_timeout.*/request_terminate_timeout = 60/" /etc/php/$phpVersion/fpm/pool.d/www.conf
-                sed -i "s/pm\.max_children.*/pm.max_children = 70/" /etc/php/$phpVersion/fpm/pool.d/www.conf
-                sed -i "s/pm\.start_servers.*/pm.start_servers = 20/" /etc/php/$phpVersion/fpm/pool.d/www.conf
-                sed -i "s/pm\.min_spare_servers.*/pm.min_spare_servers = 20/" /etc/php/$phpVersion/fpm/pool.d/www.conf
-                sed -i "s/pm\.max_spare_servers.*/pm.max_spare_servers = 35/" /etc/php/$phpVersion/fpm/pool.d/www.conf
-                sed -i "s/;pm\.max_requests.*/pm.max_requests = 500/" /etc/php/$phpVersion/fpm/pool.d/www.conf
+                sed -i "s/;listen\.mode.*/listen.mode = 0666/" /etc/php/"$phpVersion"/fpm/pool.d/www.conf
+                sed -i "s/;request_terminate_timeout.*/request_terminate_timeout = 60/" /etc/php/"$phpVersion"/fpm/pool.d/www.conf
+                sed -i "s/pm\.max_children.*/pm.max_children = 70/" /etc/php/"$phpVersion"/fpm/pool.d/www.conf
+                sed -i "s/pm\.start_servers.*/pm.start_servers = 20/" /etc/php/"$phpVersion"/fpm/pool.d/www.conf
+                sed -i "s/pm\.min_spare_servers.*/pm.min_spare_servers = 20/" /etc/php/"$phpVersion"/fpm/pool.d/www.conf
+                sed -i "s/pm\.max_spare_servers.*/pm.max_spare_servers = 35/" /etc/php/"$phpVersion"/fpm/pool.d/www.conf
+                sed -i "s/;pm\.max_requests.*/pm.max_requests = 500/" /etc/php/"$phpVersion"/fpm/pool.d/www.conf
                 # Set The PHP-FPM User
-                sed -i "s/user = www-data/user = $USERNAME/" /etc/php/$phpVersion/fpm/pool.d/www.conf
-                sed -i "s/group = www-data/group = $USERNAME/" /etc/php/$phpVersion/fpm/pool.d/www.conf
-                sed -i "s/listen\.owner.*/listen.owner = $USERNAME/" /etc/php/$phpVersion/fpm/pool.d/www.conf
-                sed -i "s/listen\.group.*/listen.group = $USERNAME/" /etc/php/$phpVersion/fpm/pool.d/www.conf
+                sed -i "s/user = www-data/user = $USERNAME/" /etc/php/"$phpVersion"/fpm/pool.d/www.conf
+                sed -i "s/group = www-data/group = $USERNAME/" /etc/php/"$phpVersion"/fpm/pool.d/www.conf
+                sed -i "s/listen\.owner.*/listen.owner = $USERNAME/" /etc/php/"$phpVersion"/fpm/pool.d/www.conf
+                sed -i "s/listen\.group.*/listen.group = $USERNAME/" /etc/php/"$phpVersion"/fpm/pool.d/www.conf
         fi
     fi
 }
@@ -327,13 +327,14 @@ function the_database_install() {
 
 function the_mysql() {
     # Install MySQL
-    local MYSQLPASS=$(openssl rand -base64 32)
+    local MYSQLPASS=""
+    MYSQLPASS=$(openssl rand -base64 32)
 
-    if [ ! -d /home/$USERNAME/.provisioner/configs ]; then
-        mkdir /home/$USERNAME/.provisioner/configs
+    if [ ! -d /home/"$USERNAME"/.provisioner/configs ]; then
+        mkdir /home/"$USERNAME"/.provisioner/configs
     fi
 
-    echo $MYSQLPASS > /home/$USERNAME/.provisioner/configs/mysqlpass.txt
+    echo "$MYSQLPASS" > /home/"$USERNAME"/.provisioner/configs/mysqlpass.txt
 
     echo "mysql-server mysql-server/root_password password $MYSQLPASS" | sudo debconf-set-selections
     echo "mysql-server mysql-server/root_password_again password $MYSQLPASS" | sudo debconf-set-selections
@@ -342,13 +343,13 @@ function the_mysql() {
     mysql_secure_installation
 }
 
-function the_mariadb() {
-    ## TODO
-}
+#function the_mariadb() {
+#    ## TODO
+#}
 
-function the_postgresql() {
-    ## TODO
-}
+#function the_postgresql() {
+#    ## TODO
+#}
 
 function the_ssl() {
     # Install Letsencrypt Certbot

@@ -70,3 +70,7 @@ Using a custom USERNAME **myusername**
 ```bash
 ssh root@servers_public_IP "bash -s" -- < scripts/initial_server_setup.sh myusername
 ```
+
+### [Shell Check](https://www.shellcheck.net/)
+
+
