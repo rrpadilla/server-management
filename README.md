@@ -74,7 +74,17 @@ ssh root@servers_public_IP "bash -s" -- < scripts/initial_server_setup.sh myuser
 Install LEMP 
 
 ```bash
+curl -L https://raw.githubusercontent.com/rrpadilla/server-management/master/scripts/provision_lemp.sh -o /tmp/provision_lemp.sh && chmod +x /tmp/provision_lemp.sh && bash /tmp/provision_lemp.sh && rm /tmp/provision_lemp.sh
+```
+
+```bash
 ssh root@servers_public_IP "bash -s" -- < scripts/provision_lemp.sh
+```
+
+You can find your mysql username and password here:
+
+```config
+/home/ubuntu/.provisioner/configs/mysqlpass.txt
 ```
 
 ### [Shell Check](https://www.shellcheck.net/)
